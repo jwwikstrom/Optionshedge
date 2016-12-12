@@ -1,0 +1,13 @@
+function [r2, sigma2] = genScenariosLatin(nu, sigma, t, nSamples, beta0, beta1, beta2, alpha)
+
+% 
+
+xi = lhsnorm(zeros(1,1), eye(1), nSamples)';
+r = nu*t + sigma.*xi*sqrt(t);
+sigma2 = beta0 + beta1*sigma^2 + beta2/t*(r - alpha*t).^2;
+
+
+
+
+
+
