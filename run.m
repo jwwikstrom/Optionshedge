@@ -43,3 +43,6 @@ qqplot(xi);
 
 [scenarios, scenarioVol] = genScenariosLatin(xOpt(1), sqrt(v(end)), dt, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5) );
 
+%% PCA
+
+
