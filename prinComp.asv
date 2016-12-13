@@ -4,7 +4,7 @@ function [ output_args ] = prinComp( input_args )
 %   Detailed explanation goes here
 
 data2 = flipud(xlsread('data.xlsx','PCA','C4:IF845'));
-funds = data;
+%funds = flipud(xlsread('lab5.xlsx','Blad2', 'B3:B752'));
 faktorData = data2;
 
 fundReturns = log(funds(2:length(funds))./funds(1:length(funds)-1));
