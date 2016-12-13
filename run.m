@@ -40,8 +40,11 @@ figure(4);
 qqplot(xi);
 
 %%
+%% Generaring av scenarion
 
 [scenarios, scenarioVol] = genScenariosLatin(xOpt(1), sqrt(v(end)), dt, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5) );
+
+scenarios = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt );
 
 %% PCA
 
