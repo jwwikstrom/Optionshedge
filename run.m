@@ -45,4 +45,4 @@ qqplot(xi);
 
 %% PCA
 
-
+[evec, egd] = eig(cov(r));
