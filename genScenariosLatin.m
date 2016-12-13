@@ -1,5 +1,5 @@
 
-function [r] = genScenariosLatin(nu, vol, t, nSamples, beta0, beta1, beta2, alpha, dt)
+function [r,vol] = genScenariosLatin(nu, vol, t, nSamples, beta0, beta1, beta2, alpha, dt)
 
 %
 

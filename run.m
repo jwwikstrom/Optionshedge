@@ -2,12 +2,13 @@
 
 [data,txt] = xlsread('data.xlsx', 'USDSEK');
 fxHistory = data(end:-1:1,1);
-dates = datenum(txt(end:-1:3,1));
+dates = datenum(txt(end:-1:2,1));
 
 t = 1/12;
 nSamples = 200;
+nDays = 252;
 dt=1/252;
-r = log(fxHistory(2:end)./fxHistory(1:end-1));
+r = log(fxHistory(2:end-nDays)./fxHistory(1:end-1-nDays));
 
 optionvec=optimset('MaxFunEvals',2000,'Display','iter','TolX',1e-12,'TolFun',1e-7,'Algorithm','interior-point');
 % x = [ nu    beta0   beta1  beta2   alpha0   alpha1]
@@ -40,7 +41,7 @@ figure(4);
 qqplot(xi);
 
 
-%% Generaring av scenarion
+%% Generering av scenarion
 
 
 scenarios = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt );
