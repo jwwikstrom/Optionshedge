@@ -1,11 +1,14 @@
-function [r2, sigma2] = genScenariosLatin(nu, sigma, t, nSamples, beta0, beta1, beta2, alpha)
+function [r, vol] = genScenariosLatin(nu, vol, t, nSamples, beta0, beta1, beta2, alpha, dt)
 
-% 
+%
 
-xi = lhsnorm(zeros(1,1), eye(1), nSamples)';
-r = nu*t + sigma.*xi*sqrt(t);
-sigma2 = beta0 + beta1*sigma^2 + beta2/t*(r - alpha*t).^2;
+nDays = t/dt
+xi = lhsnorm(zeros(nDays,1), eye(nDays), nSamples)';
 
+for i = 1:nDays
+    rTemp = nu*t + sqrt(vol).*xi(i,:)*sqrt(t);
+    vol = beta0 + beta1*vol + beta2/t*(rTemp - alpha*t).^2;
+end
 
 
 
