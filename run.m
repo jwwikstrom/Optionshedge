@@ -30,15 +30,20 @@ xOpt
 v=zeros(length(r)+1,1);
 v(1)=(std(r))^2/dt;
 
-for i = 1:length(r)
-    
+for i = 1:length(r)  
      v(i+1)=xOpt(2)+xOpt(3)*v(i)+xOpt(4)*(1/dt)*(r(i)-xOpt(5)*dt).^2;     
- 
 end
 
 xi = (r-xOpt(1)*dt)./sqrt(v(1:end-1)*(dt));
 figure(4);
 qqplot(xi);
+title('QQ plot of GARCH(1,1) returns'); 
+
+rs = (r-mean(r))/std(r);
+
+figure(3);
+qqplot(rs); 
+title('QQ plot of standardized logarithmic returns'); 
 
 
 %% Generering av scenarion
