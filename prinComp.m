@@ -5,9 +5,9 @@ function [ output_args ] = prinComp( input_args )
 
 volsurfaces= flipud(xlsread('data.xlsx','PCA','C4:IF845'));
 temp = zeros(14,17,842);
+
 % 14 maturities x 17 deltas x 842 dates
 for k = 1:842
-
 temp(:,:,k) = reshape(volsurfaces(k,:),[17,14])';    
 end
 
@@ -38,7 +38,7 @@ while varExpl < target
     varExpl = varExpl + eigVal(k)/sum(eigVal);
 end
 
-pComp = eigVec(:,1:k);
+pComp = eigVec(:,end-k+1:end);
 
 B = reshape(pComp,[14,17,k]);
 
