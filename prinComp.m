@@ -38,7 +38,7 @@ while varExpl < target
     varExpl = varExpl + eigVal(k)/sum(eigVal);
 end
 
-pComp = eigVec(:,end-k+1:end);
+pComp = eigVec(:,end:-1:end-k+1);
 
 B = reshape(pComp,[14,17,k]);
 
