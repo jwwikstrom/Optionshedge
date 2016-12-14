@@ -1,4 +1,4 @@
-function [ output_args ] = prinComp( input_args )
+function [ B, nu, u, Xt ] = prinComp(  )
 %Reads .xlsx file of rates (?) and outputs the k compontents that describe
 % 99 (?) percent of the variance
 %   Detailed explanation goes here
@@ -6,6 +6,7 @@ function [ output_args ] = prinComp( input_args )
 volsurfaces= flipud(xlsread('data.xlsx','PCA','C4:IF845'));
 temp = zeros(14,17,842);
 
+u = volsurfaces(end,:)';
 % 14 maturities x 17 deltas x 842 dates
 for k = 1:842
 temp(:,:,k) = reshape(volsurfaces(k,:),[17,14])';    
@@ -13,7 +14,7 @@ end
 
 
 % 14 maturities x 17 deltas x 841 returns
-volDiff = log(temp(:,:,2:end)./temp(:,:,1:end-1));
+volDiff = log(temp(:,:,2:end)./temp(:,:,1:end-1)); %Skala med sigma?
 
 % (14 mat x 17 delta) x 841 returns
 for i = 1:841
@@ -38,9 +39,12 @@ while varExpl < target
     varExpl = varExpl + eigVal(k)/sum(eigVal);
 end
 
-pComp = eigVec(:,end:-1:end-k+1);
+B = eigVec(:,end:-1:end-k+1);
+Y = cov((eigVec*eigVec'*volDiff2D - B*B'*volDiff2D)');
+nu = diag(Y);
+Xt = B'*volDiff2D;
 
-B = reshape(pComp,[14,17,k]);
+
 
 % for j = 1:length(volDiff2D)
 %     for i = 1:k
