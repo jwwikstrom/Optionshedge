@@ -40,7 +40,7 @@ end
 
 pComp = eigVec(:,end-k+1:end);
 
-B = reshape(pComp,[14,17,k]);
+B = (reshape(pComp,[14,17,k]));
 
 % for j = 1:length(volDiff2D)
 %     for i = 1:k
