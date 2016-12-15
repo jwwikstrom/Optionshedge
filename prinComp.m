@@ -9,7 +9,7 @@ temp = zeros(14,17,842);
 u = volsurfaces(end,:)';
 % 14 maturities x 17 deltas x 842 dates
 for k = 1:842
-temp(:,:,k) = reshape(volsurfaces(k,:),[17,14])';    
+temp(:,:,k) = reshape(volsurfaces(k,:),[14,17]);    
 end
 
 
@@ -45,10 +45,6 @@ nu = diag(Y);
 Xt = B'*volDiff2D;
 
 
-<<<<<<< HEAD
-B = (reshape(pComp,[14,17,k]));
-=======
->>>>>>> origin/master
 
 % for j = 1:length(volDiff2D)
 %     for i = 1:k

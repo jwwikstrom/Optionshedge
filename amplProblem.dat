@@ -1,0 +1,26 @@
+param interestRate := 1.000000e-02;
+param alpha := 1.000000e+00;
+param nSamples := 2.000000e+00;
+param dt := 1.000000e+00;
+param transactionCost := 1.000000e-02;
+param kassaIn := 1.000000e+02;
+param probability := 5.000000e-01;
+set assets = sca seb ; 
+param initHoldingPortfolio = sca 1.000000e+01 seb 1.000000e+01 ; 
+param initHoldingHedge = sca 1.000000e+00 seb 2.000000e+00 ; 
+param nSamples = 2.000000e+00;
+param initPrice = sca 1 seb 1 ; 
+param priceScenarioHedge : sca seb :=
+1 2.000000e+00 3.000000e+00 
+2 3.000000e+00 3.000000e+00 
+; 
+param priceScenarioPortfolio : sca seb :=
+1 3.000000e+00 1.000000e+00 
+2 3.000000e+00 3.000000e+00 
+; 
+param askPricePortfolio : sca seb :=
+2 1.000000e+00 3.000000e+00 
+; 
+param bidPricePortfolio : sca seb :=
+2 1.000000e+00 3.000000e+00 
+; 

@@ -60,7 +60,7 @@ end
 %% Write to dat
 %test
 nSamples = 2;
-assets = {'sca', 'seb'};
+assets = ["seb' 'sca'];
 alpha = 1;
 dt = 1;
 interestRate = 0.01;
