@@ -1,7 +1,7 @@
 % test
 
 [data,txt] = xlsread('data.xlsx', 'USDSEK');
-fxHistory = data(end:-1:1,1);
+fxHistory = data(:,1);
 dates = datenum(txt(end:-1:2,1));
 
 t = 1/12;
@@ -49,7 +49,7 @@ title('QQ plot of standardized logarithmic returns');
 %% Generering av scenarion
 
 
-scenarios = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt );
+scenarios = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r );
 
 %% PCA
 
