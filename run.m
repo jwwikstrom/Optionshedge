@@ -63,13 +63,13 @@ testT = 5/252;
 testVol = volsurfaces(1,10)/100;
 rSWE = swe(end);
 rUSD = usd(end);
-sTest = data(end,1);
+sTest = data(end,2);
 %Ftest = forwardPrice(sTest,rSWE, rUSD, 0,testT);
-testStrikeCall = strikeCall(Ftest, testVol, testDelta, testT);
+%testStrikeCall = strikeCall(Ftest, testVol, testDelta, testT);
 
 maturityT = [5; 10; 15; 20; 30; 40; 60; 80; 100; 120; 180; 252; 378; 504]/252;
 optionsDelta = [ -10 -15 -20 -25 -30 -35 -40 -45 50 45 40 35 30 25 20 15 10]'/100; % ATM räknas alltid som CALL 
-testData = reshape(volsurfaces(end,:),[17,14]);
+testData = reshape(volsurfaces(end,:),[17,14])/100;
 
 for i = 1:length(maturityT)
 Ftest(i,1) = forwardPrice(sTest,rSWE,rUSD, 0, maturityT(i,1));    

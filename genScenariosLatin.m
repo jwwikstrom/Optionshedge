@@ -1,5 +1,3 @@
-
-
 function [rTot,vol,u] = genScenariosLatin(nu1, vol, t, nSamples, beta0, beta1, beta2, alpha, dt, r, volsurfaces)
 
 %
@@ -30,7 +28,7 @@ for i = 1:nDays;
     rTot = rTot + r;
 %     for j = 1:200
      temp = reshape(u(:,1),[17,14])';
-   surf(temp);
+   %surf(temp);
 %     end
 end
 
