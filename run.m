@@ -1,6 +1,9 @@
 % test
 
 [data,txt] = xlsread('data.xlsx', 'USDSEK');
+volsurfaces= flipud(xlsread('data.xlsx','PCA','C4:IF845'));
+swe = xlsread('data.xlsx', 'Rates', 'B2:B5138')/100;
+usd = xlsread('data.xlsx', 'Rates', 'C2:C5138')/100;
 fxHistory = data(:,1);
 dates = datenum(txt(end:-1:2,1));
 
@@ -50,12 +53,39 @@ title('QQ plot of standardized logarithmic returns');
 
 
 
-[rScenarios, volScenarios,uScenarios] = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r );
+[rScenarios, volScenarios,uScenarios] = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r, volsurfaces );
 
 
-%% Prissättning av optioner samt portfölj
+%% Prissättning av optioner samt portfölj 
+% Har försökt få ut lite priser på optioner, men blir lite orimliga tal...
+testDelta = 0.45;
+testT = 5/252;
+testVol = volsurfaces(1,10)/100;
+rSWE = swe(end);
+rUSD = usd(end);
+sTest = data(end,1);
+%Ftest = forwardPrice(sTest,rSWE, rUSD, 0,testT);
+testStrikeCall = strikeCall(Ftest, testVol, testDelta, testT);
+
+maturityT = [5; 10; 15; 20; 30; 40; 60; 80; 100; 120; 180; 252; 378; 504]/252;
+optionsDelta = [ -10 -15 -20 -25 -30 -35 -40 -45 50 45 40 35 30 25 20 15 10]'/100; % ATM räknas alltid som CALL 
+testData = reshape(volsurfaces(end,:),[17,14]);
+
+for i = 1:length(maturityT)
+Ftest(i,1) = forwardPrice(sTest,rSWE,rUSD, 0, maturityT(i,1));    
+end
 
 
+for i = 1:size(testData,2)    
+    
+    for j = 1:size(testData,1)
+       if optionsDelta(j) <0 
+       testStrikePut(j,i) =  strikePut(Ftest(i), testData(j,i), optionsDelta(j), maturityT(i));
+       else
+       testStrikeCall(j,i) =  strikeCall(Ftest(i), testData(j,i), optionsDelta(j), maturityT(i));
+       end 
+    end
+end
 
 
 %% PCA

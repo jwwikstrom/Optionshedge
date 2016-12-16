@@ -1,9 +1,9 @@
 
 
-function [rTot,vol,u] = genScenariosLatin(nu1, vol, t, nSamples, beta0, beta1, beta2, alpha, dt, r)
+function [rTot,vol,u] = genScenariosLatin(nu1, vol, t, nSamples, beta0, beta1, beta2, alpha, dt, r, volsurfaces)
 
 %
-
+%= flipud(xlsread('data.xlsx','PCA','C4:IF845'));
 
 nDays = t/dt;
 %vol = vol*ones(nDays,nSamples);
@@ -11,7 +11,7 @@ nDays = t/dt;
 %rScen = zeros(1,nSamples);
 
 
-[B, nu2, u, Xt, V]  = prinComp();
+[B, nu2, u, Xt, V]  = prinComp(volsurfaces);
 temp = [r(end-length(Xt)+1:end)'; Xt]';
 C = cov(temp);
 L = chol(C,'lower');
@@ -29,8 +29,8 @@ for i = 1:nDays;
     vol = beta0 + beta1*vol + beta2/dt*(r - alpha*t).^2; %utifr�n avkastning f� en ny vol:
     rTot = rTot + r;
 %     for j = 1:200
-%     temp = reshape(u(:,j),[17,14])';
-%     surf(temp);
+     temp = reshape(u(:,1),[17,14])';
+   surf(temp);
 %     end
 end
 
