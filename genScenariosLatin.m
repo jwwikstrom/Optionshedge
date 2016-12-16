@@ -10,22 +10,26 @@ nDays = t/dt;
 %rScen = zeros(1,nSamples);
 
 
-[B, nu2, u, Xt]  = prinComp();
+[B, nu2, u, Xt, V]  = prinComp();
 temp = [r(end-length(Xt)+1:end)'; Xt]';
 C = cov(temp);
 L = chol(C,'lower');
+B = fliplr(B);
 
-xi1 = L*lhsnorm(zeros(length(L),1), eye(length(L)), nSamples)';
-xi2 = lhsnorm(zeros(1,1), eye(1), nSamples)';
 
 u = repmat(u,1,nSamples);
 
-ut1 = u.*exp(B*xi1(2:end,:)*sqrt(t) + sqrt(nu2)*xi2*sqrt(t));
+for i = 1:nDays;
+    xi1 = L*lhsnorm(zeros(length(L),1), eye(length(L)), nSamples)';
+    xi2 = lhsnorm(zeros(1,1), eye(1), nSamples)';
 
-
-r = nu1*t + sqrt(vol).*xi1(1,:)*sqrt(t); % Ber�kna avkastning
-vol = beta0 + beta1*vol + beta2/t*(r - alpha*t).^2; %utifr�n avkastning f� en ny vol:
-
+    u = u.*exp(sqrt(V)*B*xi1(2:end,:)*sqrt(dt) + sqrt(V)*sqrt(nu2)*xi2*sqrt(dt));
+    r = nu1*dt + sqrt(vol).*xi1(1,:)*sqrt(dt); % Ber�kna avkastning
+    vol = beta0 + beta1*vol + beta2/dt*(r - alpha*t).^2; %utifr�n avkastning f� en ny vol:
+    
+    temp = reshape(u(:,1),[17,14])';
+    surf(temp);
+end
 
 
 % for i = 1:nSamples
