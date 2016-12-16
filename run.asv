@@ -49,13 +49,7 @@ title('QQ plot of standardized logarithmic returns');
 %% Generering av scenarion
 
 
-[rScenarios, volScenarios,uScenarios] = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r );
-
-
-%% Prissättning av optioner samt portfölj
-
-
-
+rScenarios, vol = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r );
 
 %% PCA
 

@@ -1,5 +1,5 @@
 
-function [r,vol] = genScenariosLatin(nu1, vol, t, nSamples, beta0, beta1, beta2, alpha, dt, r)
+function [rTot,vol,u] = genScenariosLatin(nu1, vol, t, nSamples, beta0, beta1, beta2, alpha, dt, r)
 
 %
 
@@ -18,7 +18,7 @@ B = fliplr(B);
 
 
 u = repmat(u,1,nSamples);
-
+rTot = 0;
 for i = 1:nDays;
     xi1 = L*lhsnorm(zeros(length(L),1), eye(length(L)), nSamples)';
     xi2 = lhsnorm(zeros(1,1), eye(1), nSamples)';
@@ -26,10 +26,14 @@ for i = 1:nDays;
     u = u.*exp(sqrt(V)*B*xi1(2:end,:)*sqrt(dt) + sqrt(V)*sqrt(nu2)*xi2*sqrt(dt));
     r = nu1*dt + sqrt(vol).*xi1(1,:)*sqrt(dt); % Ber�kna avkastning
     vol = beta0 + beta1*vol + beta2/dt*(r - alpha*t).^2; %utifr�n avkastning f� en ny vol:
-    
-    temp = reshape(u(:,1),[17,14])';
-    surf(temp);
+    rTot = rTot + r;
+%     for j = 1:200
+%     temp = reshape(u(:,j),[17,14])';
+%     surf(temp);
+%     end
 end
+
+
 
 
 % for i = 1:nSamples
