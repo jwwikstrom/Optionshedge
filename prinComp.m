@@ -10,8 +10,12 @@ u = volsurfaces(end,:)';
 V = diag(var(volsurfaces));
 % 14 maturities x 17 deltas x 842 dates
 for k = 1:842
+<<<<<<< HEAD
+temp(:,:,k) = reshape(volsurfaces(k,:),[14,17]);    
+=======
 temp(:,:,k) = reshape(volsurfaces(k,:),[17,14])'; 
 surf(temp(:,:,k));
+>>>>>>> ffb302d13ec7eb7beec6c8e279fbf5eb3e0c594f
 end
 
 

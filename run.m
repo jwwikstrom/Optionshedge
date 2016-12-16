@@ -49,6 +49,7 @@ title('QQ plot of standardized logarithmic returns');
 %% Generering av scenarion
 
 
+
 [rScenarios, volScenarios,uScenarios] = genScenariosLatin(xOpt(1), v(end), t, nSamples, xOpt(2), xOpt(3), xOpt(4), xOpt(5), dt,r );
 
 
@@ -60,3 +61,25 @@ title('QQ plot of standardized logarithmic returns');
 %% PCA
 
 [evec, egd] = eig(cov(r));
+
+%% Write to dat
+%test
+nSamples = 2;
+assets = {'sca', 'seb'};
+alpha = 1;
+dt = 1;
+interestRate = 0.01;
+transactionCost = 0.01;
+kassaIn = 100;
+initHoldingPortfolio = [10,10];
+initHoldingHedge = [1,2];
+initPrice = [1,2];
+priceScenarioHedge = [2,3;3,3];
+bidPricePortfolio = [1,3];
+askPricePortfolio = [1,3];
+priceScenarioPortfolio = [3,1;3,3];
+%slut test
+
+
+writeHedgeModel(nSamples, assets, alpha, dt, interestRate, transactionCost, kassaIn, initHoldingPortfolio, initHoldingHedge, initPrice, priceScenarioHedge, bidPricePortfolio, askPricePortfolio, priceScenarioPortfolio);
+
