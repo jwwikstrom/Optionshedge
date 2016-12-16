@@ -1,4 +1,4 @@
-function [ B, nu, u, Xt ] = prinComp(  )
+function [ B, nu, u, Xt, V ] = prinComp(  )
 %Reads .xlsx file of rates (?) and outputs the k compontents that describe
 % 99 (?) percent of the variance
 %   Detailed explanation goes here
@@ -7,9 +7,15 @@ volsurfaces= flipud(xlsread('data.xlsx','PCA','C4:IF845'));
 temp = zeros(14,17,842);
 
 u = volsurfaces(end,:)';
+V = diag(var(volsurfaces));
 % 14 maturities x 17 deltas x 842 dates
 for k = 1:842
+<<<<<<< HEAD
 temp(:,:,k) = reshape(volsurfaces(k,:),[14,17]);    
+=======
+temp(:,:,k) = reshape(volsurfaces(k,:),[17,14])'; 
+surf(temp(:,:,k));
+>>>>>>> ffb302d13ec7eb7beec6c8e279fbf5eb3e0c594f
 end
 
 
@@ -46,12 +52,9 @@ Xt = B'*volDiff2D;
 
 
 
-% for j = 1:length(volDiff2D)
-%     for i = 1:k
-%         F(j,i)=indexReturns(j,:)*B(:,i);
-%     end
-% end
-% ctrl1 = cov(F);
+
+
+
 
 end
 
