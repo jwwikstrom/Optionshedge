@@ -66,7 +66,7 @@ rUSD = usd(end);
 s = data(end,1);
 Data = reshape(volsurfaces(end,:),[17,14])/100;
 %Ftest = forwardPrice(sTest,rSWE, rUSD, 0,testT);
-%testStrikeCall = strikeCall(Ftest, testVol, testDelta, testT);
+
 
 maturityT = [5; 10; 15; 20; 30; 40; 60; 80; 100; 120; 180; 252; 378; 504]/252;
 optionsDelta = [ 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 ]'/100; % ATM räknas alltid som CALL 
@@ -87,23 +87,39 @@ optionPortfolio = ones(floor(size(Data,1)/2),3);
                 %180
 THedge = [30 40 60 80 100 120 180]/252;
 hedgePortfolio = zeros(size(Data,1), 7); 
+kHedge = zeros(size(Data,1), 7); 
 initPortfolioValue = 0;
 
 
 
+for t =1:30
 for i = 1:length(maturityT)
-    Ftest(i,1) = forwardPrice(s,rSWE,rUSD, 0, maturityT(i,1));    
+    F(i,1) = forwardPrice(s,rSWE,rUSD, 0, maturityT(i,1));    
 end
 
+
+%K for options
 for i = 1:size(optionPortfolio,2)
     for j = 1:size(optionPortfolio,1)
             kPortfolio(j,i) =  strike(forwardPrice(s,rSWE,rUSD, 0, TOption(i)), Data(j,i), optionsDelta(j), maturityT(i));
-            testd1(j,i)= d_1(Ftest(i,1),testStrike(j,i),Data(j,i), maturityT(i));
+            testd1(j,i)= d_1(F(i,1),kPortfolio(j,i),Data(j,i), maturityT(i));
             testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
-            initPortfolioValue = initPortfolioValue + put(testStrike(j,i), testd1(j,i), testd2(j,i), Ftest(i,1),  rSWE, maturityT(i));
+            initPortfolioValue = initPortfolioValue + put(kPortfolio(j,i), testd1(j,i), testd2(j,i), F(i,1),  rSWE, maturityT(i));
       
     end    
 end
+%K for hedge
+for i = 1:size(hedgePortfolio,2)
+    for j = 1:size(hedgePortfolio,1)
+            kHedge(j,i) =  strike(forwardPrice(s,rSWE,rUSD, 0, THedge(i)), Data(j,i+4), optionsDelta(j), maturityT(i));
+%             testd1(j,i)= d_1(F(i,1),kHedge(j,i),Data(j,i), maturityT(i));
+%             testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
+%             initPortfolioValue = initPortfolioValue + put(kHedge(j,i), testd1(j,i), testd2(j,i), F(i,1),  rSWE, maturityT(i));
+      
+    end    
+end
+
+%kPortfolio = kPortfolio(1:8,1:end); % gör om kPortfolio till 8x3, var 24x3 innan!/abbas
 
 kassa = -initPortfolioValue + 1;
 
@@ -112,24 +128,45 @@ kassa = -initPortfolioValue + 1;
 
 
 
-futureValuePortfolio = valuatePortfolio( optionPortfolio, uScenarios, TOption, kPortfolio , exp(rScenarios)*s, optionsDelta, s,rSWE,rUSD, maturityT);
+optionPrices = valuatePortfolio( optionPortfolio, uScenarios, TOption, kPortfolio , exp(rScenarios)*s, optionsDelta, s,rSWE,rUSD, maturityT);
+hedgePrices = valuatePortfolio( hedgePortfolio, uScenarios, THedge, kHedge , exp(rScenarios)*s, optionsDelta, s,rSWE,rUSD, maturityT);
 
-%%testköret
-for i = 1:size(Data,2)
-    
-    for j = 1:size(Data,1)
+
+volla = reshape(volsurfaces(end-253+t,:),[17,14])/100;
+
+bidPricePortfolio =  ;
+
+
+for i = 1:size(hedgePortfolio,2)
+    for j = 1:size(hedgePortfolio,1)
         
-            testStrike(j,i) =  strikePut(Ftest(i), Data(j,i), optionsDelta(j), maturityT(i));
-            testd1(j,i)=d_1(Ftest(i,1),testStrike(j,i),Data(j,i), maturityT(i));
-            testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
-            testPricePut(j,i) = put(testStrike(j,i), testd1(j,i), testd2(j,i), Ftest(i,1),  rSWE, maturityT(i));
-
-            testStrike(j,i) =  strikeCall(Ftest(i), Data(j,i), optionsDelta(j), maturityT(i));
-            testd1(j,i)= d_1(Ftest(i,1),testStrike(j,i),Data(j,i), maturityT(i));
-            testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
-            testPriceCall(j,i) = call(testStrike(j,i), testd1(j,i), testd2(j,i), Ftest(i,1),  rSWE, maturityT(i));
+        pd1(j,i)= d_1(F(i,1),kPortfolio(j,i),volla(j,i+1), maturityT(i));
+        pd2(j,i) = d_2(pd1(j,i),volla(j,i+1),maturityT(i));
+        
+        call(kHedge, pd1, pd2, F(i,1), rSWE, maturityT(i))
+        put(kHedge, pd1, pd2, F(i,1), rSWE, maturityT(i))
+        
     end
 end
+askPricePortfolio = bidPricePortfolio;
+writeHedgeModel(nSamples, assets, alpha, dt, interestrate, transactionCost, kassa, optionPortfolio, hedgePortfolio, optionPrices, hedgePrices, bidPricePortfolio, askPricePortfolio, priceScenarioPortfolio) 
+end
+%%testköret
+% for i = 1:size(Data,2)
+%     
+%     for j = 1:size(Data,1)
+%         
+%             testStrike(j,i) =  strikePut(Ftest(i), Data(j,i), optionsDelta(j), maturityT(i));
+%             testd1(j,i)=d_1(Ftest(i,1),testStrike(j,i),Data(j,i), maturityT(i));
+%             testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
+%             testPricePut(j,i) = put(testStrike(j,i), testd1(j,i), testd2(j,i), Ftest(i,1),  rSWE, maturityT(i));
+% 
+%             testStrike(j,i) =  strikeCall(Ftest(i), Data(j,i), optionsDelta(j), maturityT(i));
+%             testd1(j,i)= d_1(Ftest(i,1),testStrike(j,i),Data(j,i), maturityT(i));
+%             testd2(j,i) = d_2(testd1(j,i),Data(j,i),maturityT(i));
+%             testPriceCall(j,i) = call(testStrike(j,i), testd1(j,i), testd2(j,i), Ftest(i,1),  rSWE, maturityT(i));
+%     end
+% end
 
 % for i = 1 : size(testData,2)
 %     for j = i:size(testData,1)
@@ -169,10 +206,10 @@ writeHedgeModel(nSamples, assets, alpha, dt, interestRate, transactionCost, kass
 %% Delta Hedge
 
 
-% Put options in our portfolio
+% Delta_Put in our portfolio for each option
 for i = 1:size(optionPortfolio,2)
     for j = 1:size(optionPortfolio,1)
-        delta_Portfolio_put(j,i) = delta_put(d_1(Ftest, kPortfolio(j,i), testVol, TOption(i)), rUSD, TOption(i)); 
+        delta_Portfolio_put(j,i) = delta_put(d_1(F, kPortfolio(j,i), testVol, TOption(i)), rUSD, TOption(i)); 
         % Osäker på T eller TOption, testVol? Vill väl ha volatiltiet för
         % tidpunkt för resp option med avseende på underliggande
         % Får inf pga 0 i kportfolio, vill summera alla så vi får en skalär
@@ -184,21 +221,36 @@ delta_PortfolioPutValue = 0;
 
 for i = 1:size(optionPortfolio,2)
     for j = 1:size(optionPortfolio,1)
-        delta_PortfolioPutValue = delta_PortfolioPutValue + delta_Portfolio_put(j,i);
+        delta_PortfolioPutValue = delta_PortfolioPutValue + delta_Portfolio_put(j,i); % Måste ta hänsyn till vikt?
     end
 end
         
 % Call options to hedge, reach deltazero portfolio
 
-if delta_PortfolioPutValue < 0
-    delta_PortfolioCallValue = -delta_PortfolioPutValue;
-end
 
-if delta_PortfolioPutValue > 0
-    delta_PortfolioCallValue = -delta_PortfolioPutValue;
-end
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+% if delta_PortfolioPutValue < 0
+%     delta_PortfolioCallValue = -delta_PortfolioPutValue;
+% end
+% 
+% if delta_PortfolioPutValue > 0
+%     delta_PortfolioCallValue = -delta_PortfolioPutValue;
+% end
+%     
+% Delta_hedge = delta_PortfolioPutValue + delta_PortfolioCallValue;
 
 
 
