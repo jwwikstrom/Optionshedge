@@ -190,13 +190,11 @@ end
         
 % Call options to hedge, reach deltazero portfolio
 
-if delta_PortfolioPutValue < 0
+if delta_PortfolioPutValue =< 0
     delta_PortfolioCallValue = -delta_PortfolioPutValue;
 end
 
-if delta_PortfolioPutValue > 0
-    delta_PortfolioCallValue = -delta_PortfolioPutValue;
-end
+
     
 
 

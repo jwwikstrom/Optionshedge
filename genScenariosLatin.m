@@ -26,10 +26,10 @@ for i = 1:nDays;
     r = nu1*dt + sqrt(vol).*xi1(1,:)*sqrt(dt); % Ber�kna avkastning
     vol = beta0 + beta1*vol + beta2/dt*(r - alpha*t).^2; %utifr�n avkastning f� en ny vol:
     rTot = rTot + r;
-%     for j = 1:200
+   %  for j = 1:200
      temp = reshape(u(:,1),[17,14])';
-   %surf(temp);
-%     end
+  % surf(temp);
+   %  end
 end
 
 
